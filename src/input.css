@@ -1,0 +1,267 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Splash Screen */
+  .landing-page {
+    @apply fixed inset-0 w-full h-screen flex flex-col justify-center items-center text-center overflow-hidden bg-[#0b0f0d] z-[9999] transition-opacity duration-700;
+  }
+  .landing-page.fade-out {
+    @apply opacity-0 pointer-events-none;
+  }
+  .main-content {
+    @apply hidden opacity-0 transition-opacity duration-1000;
+  }
+  .main-content.show {
+    @apply block opacity-100;
+  }
+
+  /* Once-Per-Session Anti-Flicker: langsung tampilkan konten utama tanpa delay jika sudah pernah melihat splash */
+  html.splash-already-shown .landing-page {
+    display: none !important;
+  }
+  html.splash-already-shown .main-content {
+    display: block !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+  .skip-splash-btn {
+    @apply absolute top-6 right-6 z-10 bg-white/10 backdrop-blur-md border border-white/20 text-white font-poppins text-xs sm:text-sm font-medium py-1.5 px-3.5 rounded-full cursor-pointer opacity-0 invisible transition-all duration-300 hover:bg-primary/20 hover:border-primary hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-lightergreen;
+  }
+  .skip-splash-btn.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  .splash-progress-container {
+    @apply w-40 h-[3px] bg-white/15 rounded-full overflow-hidden mt-4;
+  }
+  .splash-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #3BAE6D, #87EBB3);
+    border-radius: 9999px;
+    box-shadow: 0 0 8px rgba(73, 209, 133, 0.8);
+    animation: splashProgress 1.5s ease-out forwards;
+  }
+
+  /* Ellipse background in splash */
+  .bg-ellipse {
+    @apply absolute w-[360px] h-[360px] z-0 opacity-80;
+    background: url("../img/circle.png") no-repeat center/contain;
+    filter: drop-shadow(0 0 40px rgba(0, 255, 100, 0.55));
+  }
+  .bg-ellipse-1 {
+    @apply -top-40 left-1/2 -translate-x-1/2;
+  }
+  .bg-ellipse-2 {
+    @apply -bottom-40 left-1/2 -translate-x-1/2 rotate-180;
+  }
+
+  /* Fade-in on scroll animation (IntersectionObserver in script.js) */
+  .section-title, .division-card, .about-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .section-title.fade-in, .division-card.fade-in, .about-card.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Click effect for join-btn */
+  .join-btn.clicked {
+    transform: scale(0.95);
+  }
+
+  /* Division item hover effect */
+  .division-item {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .division-item.active,
+  .division-item:hover {
+    transform: translateY(-2px);
+  }
+  .division-item:hover .item-icon {
+    border-color: rgba(73, 209, 133, 0.7);
+    box-shadow: 0 0 16px rgba(73, 209, 133, 0.35);
+  }
+  .division-item:hover .item-description {
+    border-color: rgba(73, 209, 133, 0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  /* Form Inputs */
+  .form-input {
+    @apply w-full h-[58px] sm:h-[61px] rounded-md px-4 text-white font-poppins text-base sm:text-lg font-light leading-[27px] transition-all duration-200 placeholder:text-textgray/60;
+    background: linear-gradient(180deg, #114B2A 21.15%, #000000 100%);
+    border: 1px solid rgba(128, 200, 159, 0.35);
+  }
+  .form-input:focus {
+    outline: 2px solid #80C89F;
+    outline-offset: 2px;
+  }
+  .form-input:user-invalid {
+    border-color: #ff4d4f !important;
+    box-shadow: 0 0 8px rgba(255, 77, 79, 0.4);
+  }
+  .form-input:user-invalid:focus {
+    outline: 2px solid #ff4d4f;
+    outline-offset: 2px;
+  }
+
+  /* Division Selection */
+  .division-counter {
+    @apply inline-flex items-center justify-center py-1 px-3.5 bg-white/10 border border-white/20 rounded-full text-xs font-semibold text-white tracking-wider transition-all duration-300;
+  }
+  .division-counter.complete {
+    @apply bg-primary/25 border-lightgreen text-lightergreen shadow-[0_0_10px_rgba(73,209,133,0.35)];
+  }
+
+  .division-btn {
+    @apply w-[90px] h-[90px] rounded-lg shadow-green flex flex-col items-center justify-center gap-1.5 cursor-pointer text-white font-poppins text-xs font-semibold tracking-wider transition-all duration-300;
+    background: linear-gradient(180deg, #185a34 0%, #08281a 100%);
+    border: 1.5px solid rgba(73, 209, 133, 0.4);
+  }
+  .division-btn:hover:not(:disabled) {
+    background: linear-gradient(180deg, #1f7243 0%, #0c3825 100%);
+    border-color: rgba(73, 209, 133, 0.7);
+    transform: translateY(-4px);
+    box-shadow: 0 0 27.3px rgba(48, 126, 82, 0.43);
+  }
+  .division-btn:focus-visible {
+    outline: 2px solid #49D185;
+    outline-offset: 2px;
+  }
+  .division-btn.selected,
+  .division-btn.active {
+    background: linear-gradient(180deg, #1d6e3f 0%, #09321e 100%);
+    border: 2px solid #49D185;
+    transform: translateY(-2px);
+    box-shadow: 0 0 16px rgba(73, 209, 133, 0.5);
+  }
+  .division-btn.selected:hover,
+  .division-btn.active:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 16px rgba(73, 209, 133, 0.5);
+  }
+  .division-btn:disabled,
+  .division-btn.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+    filter: grayscale(0.5);
+  }
+
+  /* Native Confirm Modal */
+  dialog.confirm-modal {
+    background: #0d1a13;
+    color: #ffffff;
+    border: 1px solid #80C89F;
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75), 0 0 24px rgba(73, 209, 133, 0.25);
+    padding: 0;
+    max-width: 460px;
+    width: calc(100% - 32px);
+    margin: auto;
+    overflow: hidden;
+  }
+  dialog.confirm-modal::backdrop {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .summary-badge {
+    background: linear-gradient(135deg, #114B2A, #3BAE6D);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    border: 1px solid #87EBB3;
+    text-transform: uppercase;
+  }
+
+  /* Multi-Step Wizard Step Transitions */
+  .form-step {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.28s ease-out, transform 0.28s ease-out;
+  }
+  .form-step.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Division Detail Dialog */
+  dialog.detail-modal {
+    background: #0b1711;
+    color: #ffffff;
+    border: 1px solid rgba(73, 209, 133, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(73, 209, 133, 0.25);
+    padding: 0;
+    max-width: 580px;
+    width: calc(100% - 32px);
+    margin: auto;
+    overflow: hidden;
+    max-height: 85vh;
+  }
+  dialog.detail-modal::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  /* Drive Permission Callout Box */
+  .drive-callout {
+    background: linear-gradient(135deg, rgba(17, 75, 42, 0.5), rgba(8, 40, 26, 0.7));
+    border: 1px solid rgba(73, 209, 133, 0.35);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-progress-bar {
+    animation: none !important;
+    width: 100% !important;
+  }
+  .section-title, .division-card, .about-card {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Custom keyframes & animations */
+@keyframes splashProgress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-in-out;
+}
